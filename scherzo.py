@@ -23,4 +23,4 @@ if st.button('Genera una frase random!'):
 
 # Aggiungi un footer
 st.markdown("---")
-st.markdown("Made with ❤️ da [Il Tuo Nome]")
+st.markdown("Made with ❤️ from MickyBi)
