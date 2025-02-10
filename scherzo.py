@@ -2,32 +2,31 @@ import streamlit as st
 import pandas as pd
 import os
 
-# Funzione per calcolare il piano d'accumulo
+# Funzione per calcolare il piano d'accumulo con interessi composti
 def calcola_piano(capital_iniziale, durata_mesi, tasso_annuo, frequenza_interessi):
     try:
         saldo = capital_iniziale
         dati = []
         giorni_totali = durata_mesi * 30  # Approssimazione di 30 giorni per mese
 
-        # Impostazione del tasso periodico e dell'intervallo di capitalizzazione
-        if frequenza_interessi == "Giornaliero":
-            tasso_periodico = tasso_annuo / 365
-            intervallo = 1
-        elif frequenza_interessi == "Mensile":
-            tasso_periodico = tasso_annuo / 12
-            intervallo = 30
-        elif frequenza_interessi == "Semestrale":
-            tasso_periodico = tasso_annuo / 2
-            intervallo = 180
-        else:  # Annuale
-            tasso_periodico = tasso_annuo
-            intervallo = 365
+        # Definizione della frequenza di capitalizzazione
+        frequenze = {
+            "Giornaliero": 365,
+            "Mensile": 12,
+            "Semestrale": 2,
+            "Annuale": 1
+        }
+
+        n = frequenze[frequenza_interessi]  # Numero di capitalizzazioni all'anno
+        tasso_periodico = tasso_annuo / n   # Tasso di interesse per periodo
 
         # Calcolo giorno per giorno
         for giorno in range(1, giorni_totali + 1):
-            # Calcolo interessi solo quando si raggiunge l'intervallo scelto
-            interesse = saldo * tasso_periodico if giorno % intervallo == 0 else 0
-            saldo += interesse
+            interesse = 0
+            # Applichiamo l'interesse solo nei giorni di capitalizzazione
+            if giorno % (365 // n) == 0:
+                interesse = saldo * tasso_periodico
+                saldo += interesse  # Aggiungi l'interesse al saldo
 
             # Aggiunta dei dati per ogni giorno
             dati.append({
